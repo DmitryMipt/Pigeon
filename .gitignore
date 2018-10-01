@@ -1,0 +1,6 @@
+node_modules/
+PigeonVenv/
+.pyc
+.swo
+.swp
+
