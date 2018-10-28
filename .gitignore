@@ -1,6 +1,7 @@
 node_modules/
 PigeonVenv/
 venv/
+instance/config.py
 .pyc
 .swo
 .swp
