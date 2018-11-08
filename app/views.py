@@ -1,15 +1,16 @@
 """Controllers"""
 from flask import request, jsonify
 from app import app
+from app.model import search_users_in_db, list_chats_in_db, create_pers_chat_in_db
 
 
-@app.route('/login/')
+@app.route('/api/login/')
 def login():
     """ login controller"""
     pass
 
 
-@app.route('/search_users/', methods=["GET", "POST"])
+@app.route('/api/search_users/', methods=["GET", "POST"])
 def search_users():
     """ search-users controller"""
     if request.method == "GET":
@@ -28,28 +29,9 @@ def search_users():
             response.mimetype = 'application/json'
             response.status_code = 404
             return response
-        # SELECT FROM DATABASE
 
-        user1 = {
-            "user_id": 22,
-            "nick": "the.good",
-            "name": "Clint Eastwood",
-            "avatar": 'avatar1.png'
-        }
-        user2 = {
-            "user_id": 222,
-            "nick": "od",
-            "name": "Cliwood",
-            "avatar": 'avatar2.png'
-        }
-        user3 = {
-            "user_id": 262,
-            "nick": "god",
-            "name": "intwood",
-            "avatar": 'avatar3.png'
-        }
         # WHY REVERSE json?
-        response = jsonify({"users": [user1, user2, user3], })
+        response = jsonify({"users": search_users_in_db(query,limit)})
         response.mimetype = 'application/json'
         response.status_code = 200
         return response
@@ -60,7 +42,7 @@ def search_users():
     return response
 
 
-@app.route('/search_chats/', methods=["GET", "POST"])
+@app.route('/api/search_chats/', methods=["GET", "POST"])
 def search_chats():
     """ search-chats controller"""
     if request.method == "GET":
@@ -108,23 +90,14 @@ def search_chats():
     return response
 
 
-@app.route('/list_chats/', methods=["GET", "POST"])
+@app.route('/api/list_chats/', methods=["GET", "POST"])
 def list_chats():
     """list_chats controller"""
     if request.method == "GET":
-        user_id = request.cookies.get('user_id')
-        # SELECT FROM DATABASE
+        #user_id = request.cookies.get('user_id')
+        user_id = 1
 
-        chat1 = {
-            "chat_id": 22,
-            "is_group_chat": False,
-            "topic": "Clint Eastwood",
-            "last_message": "asfgg",
-            "new_messages": 39,
-            "last_read_message_id": 214
-        }
-
-        response = jsonify({"chats": [chat1]})
+        response = jsonify({"chats": list_chats_in_db(user_id)})
         response.mimetype = 'application/json'
         response.status_code = 200
         return response
@@ -134,12 +107,16 @@ def list_chats():
     return response
 
 
-@app.route('/create_pers_chat/', methods=["GET", "POST"])
+@app.route('/api/create_pers_chat/', methods=["GET", "POST"])
 def create_pers_chat():
     """create_pers_chat controller"""
     if request.method == "GET":
         user_id = str(request.args.get('user_id'))
+       # my_user_id = request.cookies.get('user_id')
+
+        my_user_id = 2
         # SELECT FROM DATABASE
+        #ТУТ 3 сущности нужно создать в базе - чат и два мембера
         chat = {
             "chat_id": 22,
             "is_group_chat": False,
@@ -149,12 +126,15 @@ def create_pers_chat():
             "last_read_message_id": 0
         }
 
-        response = jsonify({"chat": [chat]})
+        response = jsonify({"chat":  create_pers_chat_in_db(user_id, my_user_id)})
         response.mimetype = 'application/json'
         response.status_code = 200
         return response
     if request.method == "POST":
-        user_id = request.args.get('user_id')
+        #user_id = request.args.get('user_id')
+        #my_user_id = request.cookies.get('user_id')
+        user_id=1
+        my_user_id=2
         # CREATE CHAT IN DATABASE
 
         chat = {
@@ -166,7 +146,7 @@ def create_pers_chat():
             "last_read_message_id": 0
         }
 
-        response = jsonify({"chat": [chat]})
+        response = jsonify({"chat": create_pers_chat_in_db(user_id, my_user_id)})
         response.mimetype = 'application/json'
         response.status_code = 200
         return response
@@ -176,7 +156,7 @@ def create_pers_chat():
     return response
 
 
-@app.route('/create_group_chat/', methods=["GET", "POST"])
+@app.route('/api/create_group_chat/', methods=["GET", "POST"])
 def create_group_chat():
     """create_group_chat controller"""
     if request.method == "GET":
@@ -218,7 +198,7 @@ def create_group_chat():
     return response
 
 
-@app.route('/add_members_to_group_chat/', methods=["GET", "POST"])
+@app.route('/api/add_members_to_group_chat/', methods=["GET", "POST"])
 def add_members_to_group_chat():
     """add_members_to_group_chat controller"""
     if request.method == "POST":
@@ -236,7 +216,7 @@ def add_members_to_group_chat():
     return response
 
 
-@app.route('/leave_group_chat/', methods=["GET", "POST"])
+@app.route('/api/leave_group_chat/', methods=["GET", "POST"])
 def leave_group_chat():
     """leave_group_chat controller"""
     if request.method == "POST":
@@ -254,7 +234,7 @@ def leave_group_chat():
     return response
 
 
-@app.route('/send_message/', methods=["GET", "POST"])
+@app.route('/api/send_message/', methods=["GET", "POST"])
 def send_message():
     """send_message controller"""
     if request.method == "POST":
@@ -282,7 +262,7 @@ def send_message():
     return response
 
 
-@app.route('/read_message/', methods=["GET", "POST"])
+@app.route('/api/read_message/', methods=["GET", "POST"])
 def read_message():
     """read_message controller"""
     if request.method == "POST":
@@ -311,7 +291,7 @@ def read_message():
     return response
 
 
-@app.route('/upload_file/', methods=["GET", "POST"])
+@app.route('/api/upload_file/', methods=["GET", "POST"])
 def upload_file():
     """upload_file controller"""
     if request.method == "POST":

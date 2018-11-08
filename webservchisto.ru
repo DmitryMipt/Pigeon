@@ -3,6 +3,7 @@ server{
         server_name webservchisto.ru www.webservchisto.ru;
 location ~ \.(gif|jpg|png)$ {
                 root /home/dmitry/Pigeon/public/pictures;
+
         }
         location / {
                 root /home/dmitry/Pigeon/public;
