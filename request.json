@@ -1,0 +1,6 @@
+{
+    "jsonrpc": "2.0",
+    "method": "read_message",
+    "params": ["17"],
+    "id": "154"
+}

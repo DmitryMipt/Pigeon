@@ -17,14 +17,15 @@ def connect_to_database():
 
 
 def _rollback_db():
-        if hasattr(flask.g, 'dbconn'):
-            conn = flask.g.dbconn
-            conn.rollback()
-            conn.close()
-            delattr(flask.g, 'dbconn')
+    if hasattr(flask.g, 'dbconn'):
+        conn = flask.g.dbconn
+        conn.rollback()
+        conn.close()
+        delattr(flask.g, 'dbconn')
 
 
 flask.got_request_exception.connect(_rollback_db, app)
+
 
 def set_in_db(sql, *args):
     curs = get_cursor()
@@ -39,21 +40,29 @@ def _commit_db():
         conn.close()
         delattr(flask.g, 'dbconn')
 
+
 flask.request_finished.connect(_commit_db, app)
+
 
 def query_one(sql, **params):
     with get_cursor() as cur:
         cur.execute(sql, params)
-        result = {}
+
         return cur.fetchone()
+
+
+def execute(sql, **params):
+    with get_cursor() as cur:
+        cur.execute(sql, params)
+
+
 
 
 def get_cursor():
     return connect_to_database().cursor()
 
 
-
-def get_sql_result_in_dict_format(sql, *args):
+def get_sql_result_in_dict_format(sql, **args):
     curs = get_cursor()
     curs.execute(sql, args)
 
